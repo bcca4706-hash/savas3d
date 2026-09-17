@@ -1,0 +1,6 @@
+{
+  "appId": "com.bbm.savas3d",
+  "appName": "Cephe 3D",
+  "webDir": "www",
+  "android": { "backgroundColor": "#1d2317" }
+}

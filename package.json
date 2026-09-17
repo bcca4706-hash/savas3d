@@ -1,0 +1,17 @@
+{
+  "name": "savas3d",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prep": "mkdir -p www/lib && cp node_modules/three/build/three.module.js www/lib/ && rm -rf www/lib/addons && cp -r node_modules/three/examples/jsm www/lib/addons"
+  },
+  "dependencies": {
+    "@capacitor-community/admob": "^7.0.0",
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "three": "0.169.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}
