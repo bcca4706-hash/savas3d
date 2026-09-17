@@ -4,7 +4,6 @@ on:
     branches: [main]
   workflow_dispatch:
 env:
-  # Kendi AdMob App ID'ni yaz (ca-app-pub-2288995098594728~XXXXXXXX). Şimdilik Google test ID.
   ADMOB_APP_ID: ca-app-pub-3940256099942544~3347511713
 jobs:
   aab:
@@ -18,13 +17,20 @@ jobs:
       - run: npm install
       - run: npm run prep
       - run: npx cap add android
-      - name: Manifest + versiyon
+      - name: Manifest + SDK + versiyon
         run: |
           M=android/app/src/main/AndroidManifest.xml
           sed -i "s#</application>#<meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" android:value=\"$ADMOB_APP_ID\"/></application>#" $M
           sed -i 's#<activity#<activity android:screenOrientation="landscape"#' $M
-          sed -i "s/versionCode 1$/versionCode ${{ github.run_number }}/" android/app/build.gradle
-          sed -i "s/versionName \"1.0\"/versionName \"1.0.${{ github.run_number }}\"/" android/app/build.gradle
+          V=android/variables.gradle
+          sed -i 's/minSdkVersion = [0-9]*/minSdkVersion = 24/' $V
+          sed -i 's/compileSdkVersion = [0-9]*/compileSdkVersion = 36/' $V
+          sed -i 's/targetSdkVersion = [0-9]*/targetSdkVersion = 36/' $V
+          echo "android.suppressUnsupportedCompileSdk=36" >> android/gradle.properties
+          VC=$((100 + ${{ github.run_number }}))
+          sed -i "s/versionCode [0-9]*/versionCode $VC/" android/app/build.gradle
+          sed -i "s/versionName \"[^\"]*\"/versionName \"1.0.$VC\"/" android/app/build.gradle
+          cat $V
       - run: npx cap sync android
       - run: cd android && chmod +x gradlew && ./gradlew bundleRelease --no-daemon
       - uses: actions/upload-artifact@v4
